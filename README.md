@@ -22,17 +22,13 @@ To use the functions in the script, import them into your Django shell or anothe
 
 Here's an example of how to use these functions:
 ```python
-from datacenter.models import Schoolkid
 from your_script import fix_marks, remove_chastisements, create_commendation
 
-# Get a schoolkid
-schoolkid = Schoolkid.objects.get(full_name__contains="Ivan Ivanov")
-
 # Fix their marks
-fix_marks(schoolkid)
+fix_marks("Ivan Ivanov")
 
 # Remove their chastisements
-remove_chastisements(schoolkid)
+remove_chastisements("Ivan Ivanov")
 
 # Create a commendation for them in Math
 create_commendation("Ivan Ivanov", "Mathematics")
