@@ -13,26 +13,29 @@ COMMENDATIONS = ['Молодец!', 'Отлично!', 'Хорошо!', 'Вел�
 
 
 def fix_marks(schoolkid):
-    schoolkid = Schoolkid.objects.get(full_name__contains=schoolkid).first()
-    Mark.objects.filter(schoolkid=schoolkid, points__in=["2", "3"]).update(points="5")
+    if child := get_schoolkid(schoolkid):
+        Mark.objects.filter(schoolkid=child, points__in=["2", "3"]).update(points="5")
 
 
 def remove_chastisements(schoolkid):
-    Chastisement.objects.filter(schoolkid=schoolkid).delete()
+    if child := get_schoolkid(schoolkid):
+        Chastisement.objects.filter(schoolkid=child).delete()
 
 
-def create_commendation(name, subject):
-
+def get_schoolkid(name):
     try:
-        child = Schoolkid.objects.get(full_name__contains=name).first()
+        return Schoolkid.objects.get(full_name__contains=name).first()
     except Schoolkid.DoesNotExist:
-        print(f"Several child with the name {name} have been found!\n"
-              f"Please specify who you mean.")
-    except Schoolkid.MultipleObjectsReturned:
         print(f"A child named {name} was not found!")
-    except Exception as exp:
-        print(f"Error: {exp}")
-    else:
+    except Schoolkid.MultipleObjectsReturned:
+        print(f"Several children with the name {name} have been found!\n"
+              f"Please specify who you mean.")
+    return None
+
+
+def create_commendation(schoolkid, subject):
+    if child := get_schoolkid(schoolkid):
+
         subject = Subject.objects.filter(
             title=subject,
             year_of_study=child.year_of_study
